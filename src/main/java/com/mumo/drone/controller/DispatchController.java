@@ -7,6 +7,9 @@ import com.mumo.drone.controller.dto.ResponseDto;
 import com.mumo.drone.entity.Drone;
 import com.mumo.drone.service.DroneService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Cache;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -35,16 +38,19 @@ public class DispatchController {
     }
 
     @GetMapping("/{droneId}")
+    @Cacheable(value = "drone", key = "#droneId")
     public ResponseEntity<Drone> getDroneById(@PathVariable Integer droneId) {
         return new ResponseEntity<>(droneService.getDroneById(droneId), OK);
     }
 
     @GetMapping("/{droneId}/loaded-meds")
+    @Cacheable(value = "drone", key = "#droneId")
     public ResponseEntity<DroneProjection> getDroneLoadedMeds(@PathVariable Integer droneId) {
         return new ResponseEntity<>(droneService.getLoadedMeds(droneId), OK);
     }
 
     @GetMapping("/{droneId}/loaded-meds/active")
+    @Cacheable(value = "drone", key = "#droneId")
     public ResponseEntity<DroneProjection> getActiveDroneLoadedMeds(@PathVariable Integer droneId) {
         return new ResponseEntity<>(droneService.getActiveLoadedMeds(droneId), OK);
     }
