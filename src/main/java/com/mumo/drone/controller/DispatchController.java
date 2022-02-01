@@ -1,6 +1,8 @@
 package com.mumo.drone.controller;
 
 import com.mumo.drone.controller.dto.DroneDto;
+import com.mumo.drone.controller.dto.DroneProjection;
+import com.mumo.drone.controller.dto.LoadDroneDto;
 import com.mumo.drone.controller.dto.ResponseDto;
 import com.mumo.drone.entity.Drone;
 import com.mumo.drone.service.DroneService;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static org.springframework.http.HttpStatus.OK;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/drone")
@@ -21,32 +25,32 @@ public class DispatchController {
 
     @PostMapping
     public ResponseEntity<DroneDto> registerDrone(@RequestBody @Valid DroneDto droneDto) {
-        return null;
+        return new ResponseEntity<>(droneService.registerDrone(droneDto), OK);
     }
 
     @GetMapping
     public ResponseEntity<Page<Drone>> getDrones(Pageable pageable,
                                                  @RequestParam(value = "state", required = false) String state) {
-        return null;
+        return new ResponseEntity<>(droneService.getDrones(pageable, state), OK);
     }
 
     @GetMapping("/{droneId}")
     public ResponseEntity<Drone> getDroneById(@PathVariable Integer droneId) {
-        return null;
+        return new ResponseEntity<>(droneService.getDroneById(droneId), OK);
     }
 
     @GetMapping("/{droneId}/loaded-meds")
-    public ResponseEntity getDroneLoadedMeds(@PathVariable Integer droneId) {
-        return null;
+    public ResponseEntity<DroneProjection> getDroneLoadedMeds(@PathVariable Integer droneId) {
+        return new ResponseEntity<>(droneService.getLoadedMeds(droneId), OK);
     }
 
     @GetMapping("/{droneId}/loaded-meds/active")
-    public ResponseEntity getActiveDroneLoadedMeds(@PathVariable Integer droneId) {
-       return null;
+    public ResponseEntity<DroneProjection> getActiveDroneLoadedMeds(@PathVariable Integer droneId) {
+        return new ResponseEntity<>(droneService.getActiveLoadedMeds(droneId), OK);
     }
 
     @PostMapping("/{droneId}/load-drone")
     public ResponseEntity<ResponseDto> loadDrone(@RequestBody @Valid LoadDroneDto loadDroneDto, @PathVariable Integer droneId) {
-        return null;
+        return new ResponseEntity<>(droneService.loadDrone(loadDroneDto, droneId), OK);
     }
 }

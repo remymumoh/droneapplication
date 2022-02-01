@@ -6,17 +6,18 @@ import lombok.Getter;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Getter
 @AllArgsConstructor
 public class DroneDto {
 
     @NotNull
-    @Max(100)
+    @Size(max = 100)
     private String serialNumber;
 
     @NotNull
-    private String modelId;
+    private String model;
 
     @NotNull
     @Max(500)
