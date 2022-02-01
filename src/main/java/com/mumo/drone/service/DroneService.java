@@ -6,6 +6,7 @@ import com.mumo.drone.entity.DroneMedication;
 import com.mumo.drone.entity.Medication;
 import com.mumo.drone.enumeration.Model;
 import com.mumo.drone.enumeration.State;
+import com.mumo.drone.exception.RequestException;
 import com.mumo.drone.repository.DroneMedicationRepository;
 import com.mumo.drone.repository.DroneRepository;
 import com.mumo.drone.repository.MedicationRepository;
@@ -15,8 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -41,10 +40,10 @@ public class DroneService {
                 log.info("Saving drone");
                 droneRepository.save(saveDrone(droneDto));
             }else {
-                throw new EntityNotFoundException("Model does not exist");
+                throw new RequestException("Model does not exist");
             }
         } else {
-            throw new EntityExistsException("Serial number exists");
+            throw new RequestException("Serial number exists");
         }
         return droneDto;
     }
@@ -58,12 +57,12 @@ public class DroneService {
 
     public Drone getDroneById(Integer id) {
         return droneRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Drone not found"));
+                .orElseThrow(() -> new RequestException("Drone not found"));
     }
 
     public DroneProjection getLoadedMeds(Integer droneId) {
         Drone drone = droneRepository.findById(droneId)
-                .orElseThrow(() -> new EntityNotFoundException("Drone not found"));
+                .orElseThrow(() -> new RequestException("Drone not found"));
         Page<DroneMedication> droneMedicationOptional = droneMedicationRepository.findByDrone(Pageable.unpaged(), drone);
 
         return DroneProjection.builder()
@@ -74,7 +73,7 @@ public class DroneService {
 
     public DroneProjection getActiveLoadedMeds(Integer droneId) {
         Drone drone = droneRepository.findById(droneId)
-                .orElseThrow(() -> new EntityNotFoundException("Drone not found"));
+                .orElseThrow(() -> new RequestException("Drone not found"));
         Page<DroneMedication> droneMedications = droneMedicationRepository.findByDroneAndActive(Pageable.unpaged(), drone, true);
 
         return DroneProjection.builder()
@@ -85,9 +84,9 @@ public class DroneService {
 
     public ResponseDto loadDrone(LoadDroneDto loadDroneDto, Integer droneId) {
         Drone drone = droneRepository.findById(droneId)
-                .orElseThrow(() -> new EntityNotFoundException("Drone not found"));
+                .orElseThrow(() -> new RequestException("Drone not found"));
         Medication medication = medicationRepository.findByCode(loadDroneDto.getMedicationCode())
-                .orElseThrow(() -> new EntityNotFoundException("Medication not found"));
+                .orElseThrow(() -> new RequestException("Medication not found"));
         String message;
 
         //check drone state
